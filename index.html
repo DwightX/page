@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>imyourbigbrother.com
+    </title>
+</head>
+<body>
+    <div id="container">
+        <div id="floatingText">imyourbigbrother.com</div>
+      </div>
+      <div id="inputContainer">
+        <input type="text" id="vintageInput" placeholder="Enter text here...">
+        <button id="submitButton">Submit</button>
+      </div>
+</body>
+</html>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const textElement = document.getElementById("floatingText");
+  const inputElement = document.getElementById("vintageInput");
+  const submitButton = document.getElementById("submitButton");
+
+  let posX = 0;
+  let posY = 0;
+  let velX = 2;
+  let velY = 2;
+  const speed = 2;
+
+  function updatePosition() {
+    const { innerWidth, innerHeight } = window;
+    const textWidth = textElement.clientWidth;
+    const textHeight = textElement.clientHeight;
+
+    posX += velX * speed;
+    posY += velY * speed;
+
+    if (posX + textWidth >= innerWidth || posX <= 0) {
+      velX *= -1;
+    }
+
+    if (posY + textHeight >= innerHeight || posY <= 0) {
+      velY *= -1;
+    }
+
+    textElement.style.transform = `translate(${posX}px, ${posY}px)`;
+  }
+
+  setInterval(updatePosition, 16);
+
+  submitButton.addEventListener("click", () => {
+    const userInput = inputElement.value;
+    if (userInput) {
+      console.log(`User input: ${userInput}`);
+
+      // Placeholder for SMS sending function
+      sendTextMessage(userInput);
+    }
+  });
+
+  function sendTextMessage(message) {
+    // Function to send SMS message using a backend service
+    // For example, using Twilio's API
+    console.log(`Sending text message: ${message}`);
+    // Example using Twilio API (not functional here):
+    // twilioClient.messages.create({
+    //   body: message,
+    //   from: 'YOUR_TWILIO_NUMBER',
+    //   to: 'RECIPIENT_NUMBER'
+    // })
+    // .then(message => console.log(message.sid))
+    // .catch(error => console.error(error));
+  }
+});
+
+
+
+</script>
+
+<style>
+   body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000;
+}
+
+#container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#floatingText {
+  position: absolute;
+  font-size: 2rem;
+  background: linear-gradient(90deg, #ff0000, #ff9e00, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00fb, #ff0000);
+  background-size: 200% 200%;
+  color: transparent;
+  -webkit-background-clip: text;
+  animation: float 5s infinite linear, colorRotation 10s infinite linear;
+}
+
+#inputContainer {
+  position: absolute;
+  bottom: 10%;
+}
+
+#vintageInput {
+  border: 2px solid #09b500;
+  background-color: #f0f0f0;
+  color: #282c34;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 10px;
+  width: 200px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+#submitButton {
+  background-color: #09b500;;
+  border: none;
+  color: #282c34;
+  padding: 10px 20px;
+  font-family: 'Courier New', Courier, monospace;
+  margin-top: 10px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#submitButton:hover {
+  background-color: #09b500;;
+}
+
+/* @keyframes float {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(100%, 0); }
+  50% { transform: translate(100%, 100%); }
+  75% { transform: translate(0, 100%); }
+  100% { transform: translate(0, 0); }
+} */
+
+@keyframes colorRotation {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@media (max-width: 768px) {
+  #floatingText {
+    font-size: 1.5rem;
+  }
+}
+
+</style>
