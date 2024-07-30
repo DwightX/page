@@ -23,59 +23,65 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputElement = document.getElementById("vintageInput");
   const submitButton = document.getElementById("submitButton");
 
-  let posX = 0;
-  let posY = 0;
-  let velX = 2;
-  let velY = 2;
-  const speed = 2;
-
-  function updatePosition() {
+  // Function to update the position of floating text
+  function updatePosition(element, velocity) {
     const { innerWidth, innerHeight } = window;
-    const textWidth = textElement.clientWidth;
-    const textHeight = textElement.clientHeight;
+    const textWidth = element.clientWidth;
+    const textHeight = element.clientHeight;
 
-    posX += velX * speed;
-    posY += velY * speed;
+    velocity.x += velocity.velX;
+    velocity.y += velocity.velY;
 
-    if (posX + textWidth >= innerWidth || posX <= 0) {
-      velX *= -1;
+    if (velocity.x + textWidth >= innerWidth || velocity.x <= 0) {
+      velocity.velX *= -1;
     }
 
-    if (posY + textHeight >= innerHeight || posY <= 0) {
-      velY *= -1;
+    if (velocity.y + textHeight >= innerHeight || velocity.y <= 0) {
+      velocity.velY *= -1;
     }
 
-    textElement.style.transform = `translate(${posX}px, ${posY}px)`;
+    element.style.transform = `translate(${velocity.x}px, ${velocity.y}px)`;
   }
 
-  setInterval(updatePosition, 16);
+  // Initial floating text
+  let initialVelocity = { x: 0, y: 0, velX: 2, velY: 2 };
+  setInterval(() => updatePosition(textElement, initialVelocity), 16);
 
+  // Handle user input submission
   submitButton.addEventListener("click", () => {
-    const userInput = inputElement.value;
+    const userInput = inputElement.value.trim();
     if (userInput) {
-      console.log(`User input: ${userInput}`);
-
-      // Placeholder for SMS sending function
-      sendTextMessage(userInput);
+      createFloatingText(userInput);
+      inputElement.value = ''; // Clear input after submission
     }
   });
 
-  function sendTextMessage(message) {
-    // Function to send SMS message using a backend service
-    // For example, using Twilio's API
-    console.log(`Sending text message: ${message}`);
-    // Example using Twilio API (not functional here):
-    // twilioClient.messages.create({
-    //   body: message,
-    //   from: 'YOUR_TWILIO_NUMBER',
-    //   to: 'RECIPIENT_NUMBER'
-    // })
-    // .then(message => console.log(message.sid))
-    // .catch(error => console.error(error));
+  // Function to create new floating text element
+  function createFloatingText(text) {
+    const newTextElement = document.createElement("div");
+    newTextElement.className = "floatingText";
+    newTextElement.innerText = text;
+
+    // Style the new element similarly to the original floating text
+    newTextElement.style.position = 'absolute';
+    newTextElement.style.fontSize = '2rem';
+    newTextElement.style.background = 'linear-gradient(90deg, #ff0000, #ff9e00, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00fb, #ff0000)';
+    newTextElement.style.backgroundSize = '200% 200%';
+    newTextElement.style.color = 'transparent';
+    newTextElement.style.webkitBackgroundClip = 'text';
+    newTextElement.style.animation = 'colorRotation 10s infinite linear';
+
+    document.getElementById("container").appendChild(newTextElement);
+
+    // Set initial random position
+    const initialX = Math.random() * (window.innerWidth - newTextElement.clientWidth);
+    const initialY = Math.random() * (window.innerHeight - newTextElement.clientHeight);
+
+    // Velocity for the new element
+    const velocity = { x: initialX, y: initialY, velX: 2, velY: 2 };
+    setInterval(() => updatePosition(newTextElement, velocity), 16);
   }
 });
-
-
 
 </script>
 
